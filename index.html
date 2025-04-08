@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appu Search Engine</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Appu Search</h1>
+    <form method="post">
+        <input type="text" name="query" placeholder="Search here..." required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if results %}
+        <h2>Results:</h2>
+        <ul>
+            {% for result in results %}
+                <li>
+                    <a href="{{ result.link }}" target="_blank">{{ result.title }}</a><br>
+                    <small>{{ result.desc }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
