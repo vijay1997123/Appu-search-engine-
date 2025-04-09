@@ -1,51 +1,52 @@
     <!DOCTYPE html>
 <html>
 <head>
-  <title>Appu</title>
-  <style>
-    body {
-      background-color: white;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-    }
-    h1 {
-      color: #3366ff;
-      font-size: 40px;
-      margin-bottom: 20px;
-    }
-    input[type="text"] {
-      width: 300px;
-      padding: 10px;
-      font-size: 16px;
-      border: 2px solid #3366ff;
-      border-radius: 5px;
-    }
-    button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #3366ff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #004dcc;
-    }
-  </style>
+    <title>Search Results - Appu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .container {
+            padding: 40px;
+        }
+        .results {
+            max-width: 700px;
+            margin: auto;
+            text-align: left;
+        }
+        .results h2 {
+            color: #3478f6;
+        }
+        .result-item {
+            margin-bottom: 30px;
+        }
+        .result-item a {
+            font-size: 20px;
+            color: #1a0dab;
+            text-decoration: none;
+        }
+        .result-item p {
+            color: #4d5156;
+        }
+    </style>
 </head>
 <body>
-  <h1>Appu</h1>
-  <form action="/results" method="GET">
-    <input type="text" name="q" placeholder="Search Appu..." required>
-    <br>
-    <button type="submit">Search</button>
-  </form>
+    <div class="container">
+        <h1>Search results for: "{{ query }}"</h1>
+        <div class="results">
+            {% for result in results %}
+                <div class="result-item">
+                    <a href="{{ result.link }}" target="_blank">{{ result.title }}</a>
+                    <p>{{ result.snippet }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>
 
+    
