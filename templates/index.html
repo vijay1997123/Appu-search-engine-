@@ -1,89 +1,51 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html>
 <head>
-    <title>Appu</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: #f6fdfd;
-            margin: 0;
-            padding: 0;
-        }
-        h1 {
-            color: #3478f6;
-            margin-top: 60px;
-        }
-        form {
-            margin: 20px auto;
-            width: 80%;
-            max-width: 400px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-        }
-        button {
-            margin-top: 10px;
-            padding: 10px 30px;
-            font-size: 16px;
-            background-color: #3478f6;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #005ae0;
-        }
-        .results {
-            margin-top: 40px;
-            text-align: left;
-            width: 80%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .results li {
-            margin-bottom: 20px;
-        }
-        .results a {
-            font-size: 18px;
-            color: #1a0dab;
-            text-decoration: none;
-        }
-        .results small {
-            color: #4d5156;
-        }
-        hr {
-            border: 0;
-            border-top: 1px solid #eee;
-        }
-    </style>
+  <title>Appu</title>
+  <style>
+    body {
+      background-color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+    h1 {
+      color: #3366ff;
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #3366ff;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3366ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #004dcc;
+    }
+  </style>
 </head>
 <body>
-    <h1>Appu</h1>
-    <form method="POST">
-        <input type="text" name="query" placeholder="Search Appu..." required>
-        <button type="submit">Search</button>
-    </form>
-
-    {% if results %}
-        <div class="results">
-            <h3>Search Results:</h3>
-            <ul>
-                {% for item in results %}
-                    <li>
-                        <a href="{{ item.link }}" target="_blank"><strong>{{ item.title }}</strong></a><br>
-                        <small>{{ item.desc }}</small>
-                    </li>
-                    <hr>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
+  <h1>Appu</h1>
+  <form action="/results" method="GET">
+    <input type="text" name="q" placeholder="Search Appu..." required>
+    <br>
+    <button type="submit">Search</button>
+  </form>
 </body>
 </html>
+
