@@ -1,31 +1,40 @@
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+
+visited = set()
 
 def fetch_page(url):
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Raise exception for bad responses (4xx, 5xx)
+        response.raise_for_status()
         return response.text
     except requests.RequestException as e:
         print(f"Error fetching {url}: {e}")
         return None
 
-def parse_page(html):
+def parse_page(html, base_url):
     soup = BeautifulSoup(html, 'html.parser')
-    # Example: Get all the links in the page
-    links = soup.find_all('a', href=True)
+    links = set()
+    for a_tag in soup.find_all('a', href=True):
+        absolute_url = urljoin(base_url, a_tag['href'])
+        links.add(absolute_url)
     return links
 
 def crawl(url):
-    print(f"Crawling URL: {url}")
+    if url in visited:
+        return
+    print(f"Crawling: {url}")
+    visited.add(url)
     html = fetch_page(url)
     if html:
-        links = parse_page(html)
+        links = parse_page(html, url)
         print(f"Found {len(links)} links.")
-        # You can now add the links to your index or process them
         for link in links:
-            print(link['href'])
+            print(link)
+            # You can crawl deeper if needed
+            # crawl(link)
 
 if __name__ == "__main__":
-    starting
-  
+    crawl("https://example.com")
+    
