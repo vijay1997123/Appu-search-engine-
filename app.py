@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request
+import requests
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
@@ -13,11 +15,42 @@ def results():
     return render_template('results.html', query=query, results=results)
 
 def search_function(query):
-    # Dummy search logic – will replace later with real crawler
-    return [
-        {"title": "Appu Result 1", "link": "https://example.com/1", "snippet": "First dummy result for your query."},
-        {"title": "Appu Result 2", "link": "https://example.com/2", "snippet": "Another dummy result with info."},
+    websites = [
+        "https://en.wikipedia.org/wiki/Web_crawler",
+        "https://www.geeksforgeeks.org/web-crawling-in-python/",
+        "https://realpython.com/beautiful-soup-web-scraper-python/"
     ]
+
+    results = []
+
+    for site in websites:
+        try:
+            response = requests.get(site, timeout=5)
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            title = soup.title.string.strip() if soup.title else "No Title"
+            desc_tag = soup.find('meta', attrs={'name': 'description'}) or soup.find('p')
+            desc = desc_tag['content'].strip() if desc_tag and desc_tag.has_attr('content') else desc_tag.text.strip() if desc_tag else "No Description"
+
+            if query.lower() in title.lower() or query.lower() in desc.lower():
+                results.append({
+                    'title': title,
+                    'link': site,
+                    'snippet': desc
+                })
+
+        except Exception as e:
+            print(f"Error crawling {site}: {e}")
+
+    if not results:
+        results.append({
+            'title': "No matching results found",
+            'link': "#",
+            'snippet': "Try a different keyword or wait for more crawling."
+        })
+
+    return results
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
