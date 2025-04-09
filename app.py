@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import requests
 from bs4 import BeautifulSoup
+import os  # Importing os for environment variable access
 
 app = Flask(__name__)
 
@@ -15,7 +16,6 @@ def results():
     return render_template('results.html', query=query, results=results)
 
 def search_function(query):
-    # List of websites to crawl (you can add more)
     websites = [
         "https://en.wikipedia.org/wiki/Web_crawler",
         "https://www.geeksforgeeks.org/web-crawling-in-python/",
@@ -26,18 +26,13 @@ def search_function(query):
 
     for site in websites:
         try:
-            # Requesting the site
             response = requests.get(site, timeout=5)
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            # Extract title
             title = soup.title.string.strip() if soup.title else "No Title"
-            
-            # Extract description (meta description or first paragraph as fallback)
             desc_tag = soup.find('meta', attrs={'name': 'description'}) or soup.find('p')
             desc = desc_tag['content'].strip() if desc_tag and desc_tag.has_attr('content') else desc_tag.text.strip() if desc_tag else "No Description"
 
-            # Check if the query matches the title or description
             if query.lower() in title.lower() or query.lower() in desc.lower():
                 results.append({
                     'title': title,
@@ -48,7 +43,6 @@ def search_function(query):
         except Exception as e:
             print(f"Error crawling {site}: {e}")
 
-    # If no results found, show a fallback message
     if not results:
         results.append({
             'title': "No matching results found",
@@ -58,7 +52,7 @@ def search_function(query):
 
     return results
 
+# This is where the change should be made
 if __name__ == '__main__':
-    app.run(debug=True)
-    
-        
+    port = int(os.environ.get('PORT', 5000))  # Render sets the PORT environment variable
+    app.run(host='0.0.0.0', port=port)  # Make sure the app listens on 0.0.0.0 and the correct port
