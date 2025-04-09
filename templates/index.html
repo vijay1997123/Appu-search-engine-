@@ -1,63 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Appu Search</title>
+    <title>Appu</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 100px;
-            background-color: #f8f9fa;
+            background: #f6fdfd;
+            margin: 0;
+            padding: 0;
         }
-
         h1 {
-            font-size: 48px;
-            color: #4285f4;
-            margin-bottom: 40px;
+            color: #3478f6;
+            margin-top: 60px;
         }
-
-        form input[type="text"] {
-            width: 60%;
+        form {
+            margin: 20px auto;
+            width: 80%;
+            max-width: 400px;
+        }
+        input[type="text"] {
+            width: 100%;
             padding: 12px;
-            font-size: 18px;
-            border: 1px solid #ddd;
-            border-radius: 24px;
-            outline: none;
-        }
-
-        form input[type="submit"] {
-            margin-top: 20px;
-            padding: 10px 25px;
             font-size: 16px;
-            background-color: #4285f4;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 30px;
+            font-size: 16px;
+            background-color: #3478f6;
             color: white;
             border: none;
-            border-radius: 24px;
+            border-radius: 20px;
             cursor: pointer;
         }
-
+        button:hover {
+            background-color: #005ae0;
+        }
         .results {
             margin-top: 40px;
             text-align: left;
-            width: 60%;
+            width: 80%;
+            max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
-
-        .result {
-            margin-bottom: 30px;
+        .results li {
+            margin-bottom: 20px;
         }
-
-        .result a {
+        .results a {
+            font-size: 18px;
             color: #1a0dab;
-            font-size: 20px;
             text-decoration: none;
         }
-
-        .result p {
-            color: #545454;
-            font-size: 14px;
+        .results small {
+            color: #4d5156;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #eee;
         }
     </style>
 </head>
@@ -65,19 +68,22 @@
     <h1>Appu</h1>
     <form method="POST">
         <input type="text" name="query" placeholder="Search Appu..." required>
-        <br>
-        <input type="submit" value="Search">
+        <button type="submit">Search</button>
     </form>
 
     {% if results %}
-    <div class="results">
-        {% for r in results %}
-        <div class="result">
-            <a href="{{ r.link }}" target="_blank">{{ r.title }}</a>
-            <p>{{ r.desc }}</p>
+        <div class="results">
+            <h3>Search Results:</h3>
+            <ul>
+                {% for item in results %}
+                    <li>
+                        <a href="{{ item.link }}" target="_blank"><strong>{{ item.title }}</strong></a><br>
+                        <small>{{ item.desc }}</small>
+                    </li>
+                    <hr>
+                {% endfor %}
+            </ul>
         </div>
-        {% endfor %}
-    </div>
     {% endif %}
 </body>
 </html>
