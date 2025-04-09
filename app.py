@@ -1,33 +1,23 @@
 from flask import Flask, render_template, request
-import requests
-from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def home():
-    results = []
-    if request.method == 'POST':
-        query = request.form['query']
-        results = search_web(query)
-    return render_template('index.html', results=results)
+    return render_template('index.html')
 
-def search_web(query):
-    search_url = f"https://www.bing.com/search?q={query}"
-    headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(search_url, headers=headers)
-    soup = BeautifulSoup(response.text, "html.parser")
+@app.route('/results')
+def results():
+    query = request.args.get('q')
+    results = search_function(query)
+    return render_template('results.html', query=query, results=results)
 
-    results = []
-    for result in soup.select(".b_algo"):
-        title = result.select_one("h2")
-        link = title.a["href"] if title and title.a else ""
-        desc = result.select_one(".b_caption p")
-        if title and link:
-            results.append({
-                "title": title.get_text(strip=True),
-                "link": link,
-                "desc": desc.get_text(strip=True) if desc else ""
-            })
-    return results
-    
+def search_function(query):
+    # Dummy search logic – will replace later with real crawler
+    return [
+        {"title": "Appu Result 1", "link": "https://example.com/1", "snippet": "First dummy result for your query."},
+        {"title": "Appu Result 2", "link": "https://example.com/2", "snippet": "Another dummy result with info."},
+    ]
+
+if __name__ == '__main__':
+    app.run(debug=True)
