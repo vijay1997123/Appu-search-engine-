@@ -30,18 +30,4 @@
         .result-item p {
             color: #4d5156;
         }
-    </style>
-</head>
-<body>
-    <h1>Search Results for "{{ query }}"</h1>
-    <div class="results">
-        {% for item in results %}
-        <div class="result-item">
-            <a href="{{ item.link }}" target="_blank"><strong>{{ item.title }}</strong></a>
-            <p>{{ item.snippet }}</p>
-        </div>
-        {% endfor %}
-    </div>
-</body>
-</html>
-
+        
