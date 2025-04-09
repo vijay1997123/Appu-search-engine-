@@ -1,52 +1,13 @@
     <!DOCTYPE html>
 <html>
 <head>
-    <title>Search Results - Appu</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: white;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        .container {
-            padding: 40px;
-        }
-        .results {
-            max-width: 700px;
-            margin: auto;
-            text-align: left;
-        }
-        .results h2 {
-            color: #3478f6;
-        }
-        .result-item {
-            margin-bottom: 30px;
-        }
-        .result-item a {
-            font-size: 20px;
-            color: #1a0dab;
-            text-decoration: none;
-        }
-        .result-item p {
-            color: #4d5156;
-        }
-    </style>
+    <title>Appu Search Engine</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Search results for: "{{ query }}"</h1>
-        <div class="results">
-            {% for result in results %}
-                <div class="result-item">
-                    <a href="{{ result.link }}" target="_blank">{{ result.title }}</a>
-                    <p>{{ result.snippet }}</p>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
+    <form action="/results" method="get">
+        <input type="text" name="q" placeholder="Search something..." required>
+        <button type="submit">Search</button>
+    </form>
 </body>
 </html>
 
-    
