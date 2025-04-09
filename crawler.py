@@ -1,63 +1,52 @@
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 import sqlite3
-import os
+from urllib.parse import urljoin, urlparse
 
-visited = set()
+# Connect to SQLite DB
+conn = sqlite3.connect("data/pages.db")
+cursor = conn.cursor()
 
-# DB setup
-def init_db():
-    conn = sqlite3.connect("data.db")
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS pages
-                 (url TEXT UNIQUE, title TEXT)''')
-    conn.commit()
-    conn.close()
+# Create table
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS pages (
+    url TEXT PRIMARY KEY,
+    title TEXT,
+    content TEXT
+)
+""")
+conn.commit()
 
-def save_to_db(url, title):
-    conn = sqlite3.connect("data.db")
-    c = conn.cursor()
-    try:
-        c.execute("INSERT OR IGNORE INTO pages (url, title) VALUES (?, ?)", (url, title))
-        conn.commit()
-    except Exception as e:
-        print("DB Error:", e)
-    finally:
-        conn.close()
+def is_valid(url):
+    parsed = urlparse(url)
+    return bool(parsed.netloc) and bool(parsed.scheme)
 
-def fetch_page(url):
-    try:
-        response = requests.get(url, timeout=5)
-        response.raise_for_status()
-        return response.text
-    except requests.RequestException as e:
-        print(f"Error fetching {url}: {e}")
-        return None
-
-def parse_page(html, base_url):
-    soup = BeautifulSoup(html, 'html.parser')
-    links = set()
-    for a_tag in soup.find_all('a', href=True):
-        absolute_url = urljoin(base_url, a_tag['href'])
-        links.add(absolute_url)
-    title = soup.title.string.strip() if soup.title else "No Title"
-    save_to_db(base_url, title)
-    return links
-
-def crawl(url):
+def crawl(url, visited=set()):
     if url in visited:
         return
     print(f"Crawling: {url}")
     visited.add(url)
-    html = fetch_page(url)
-    if html:
-        links = parse_page(html, url)
-        print(f"Found {len(links)} links.")
-        for link in links:
-            crawl(link)  # optional: limit depth here
+    try:
+        response = requests.get(url, timeout=5)
+        soup = BeautifulSoup(response.text, "html.parser")
+        title = soup.title.string if soup.title else "No Title"
+        content = soup.get_text()
 
-if __name__ == "__main__":
-    init_db()
-    crawl("https://example.com")
-    
+        # Store in DB
+        cursor.execute("INSERT OR IGNORE INTO pages (url, title, content) VALUES (?, ?, ?)", (url, title, content))
+        conn.commit()
+
+        # Extract and crawl internal links
+        for link in soup.find_all("a", href=True):
+            full_url = urljoin(url, link['href'])
+            if is_valid(full_url) and "http" in full_url:
+                crawl(full_url, visited)
+    except Exception as e:
+        print(f"Failed to crawl {url}: {e}")
+
+# Start point
+start_url = "https://example.com"
+crawl(start_url)
+
+conn.close()
+            
