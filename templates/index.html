@@ -7,32 +7,115 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .language-selector select {
+      padding: 5px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .main-container {
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      background-color: white;
+      align-items: center;
+      height: calc(100vh - 60px);
+      padding: 20px;
+      text-align: center;
     }
 
-    h1 {
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
       font-family: 'Brush Script MT', cursive;
-      color: #3b82f6;
-      font-size: 3rem;
-      margin-bottom: 30px;
+      color: #3a84e2;
+      margin-bottom: 40px;
     }
 
-    .search-container {
+    .search-box {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      width: 90%;
-      max-width: 500px;
-      background-color: #e0f2fe;
-      border-radius: 50px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      padding:
-        
+      max-width: 90%;
+      width: 500px;
+      background-color: #eaf6ff;
+      border-radius: 999px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 15px 20px;
+      font-size: 18px;
+      background: transparent;
+    }
+
+    .search-box button {
+      background-color: #3a84e2;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      font-size: 18px;
+      border-radius: 0 999px 999px 0;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .logo {
+        font-size: 36px;
+      }
+
+      .search-box {
+        flex-direction: row;
+        width: 100%;
+      }
+
+      .search-box button {
+        padding: 12px 18px;
+        font-size: 16px;
+      }
+
+      .search-box input {
+        padding: 12px 15px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="language-selector">
+      <select>
+        <option value="en">All Languages</option>
+        <option value="ta">Tamil</option>
+        <option value="hi">Hindi</option>
+        <option value="te">Telugu</option>
+        <option value="ml">Malayalam</option>
+        <option value="kn">Kannada</option>
+        <option value="bn">Bengali</option>
+        <option value="gu">Gujarati</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="logo">Appu</div>
+    <div class="search-box">
+      <input type="text" placeholder="Search..." />
+      <button>Search</button>
+    </div>
+  </div>
+</body>
+</html>
