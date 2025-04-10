@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Appu Search Engine</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #fff;
-      font-family: Arial, sans-serif;
+      background-color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -16,47 +17,51 @@
       height: 100vh;
     }
 
-    .logo {
+    img.logo {
       width: 150px;
       height: auto;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
-    .search-box {
+    .search-container {
       display: flex;
+      align-items: center;
       width: 90%;
       max-width: 600px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border-radius: 30px;
-      overflow: hidden;
+      background-color: #fff;
+      border-radius: 50px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 10px 20px;
     }
 
-    input[type="text"] {
+    .search-container input[type="text"] {
       flex: 1;
-      padding: 15px 20px;
-      font-size: 16px;
       border: none;
       outline: none;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 50px;
     }
 
-    button {
-      padding: 15px 20px;
+    .search-container button {
       background-color: #4285f4;
       color: white;
       border: none;
+      padding: 10px 20px;
+      border-radius: 50px;
       font-size: 16px;
       cursor: pointer;
     }
 
-    button:hover {
+    .search-container button:hover {
       background-color: #357ae8;
     }
   </style>
 </head>
 <body>
-  <img src="https://i.imgur.com/AlOYddG.png" alt="Appu Logo" class="logo">
-  <form class="search-box" action="/search">
-    <input type="text" name="q" placeholder="Search...">
+  <img src="appu_logo.png" alt="Appu Logo" class="logo" />
+  <form class="search-container" action="/search" method="GET">
+    <input type="text" name="q" placeholder="Search..." />
     <button type="submit">Search</button>
   </form>
 </body>
