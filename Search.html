@@ -3,66 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Appu Search Results</title>
+  <title>Search Results - Appu</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
+      font-family: sans-serif;
       padding: 20px;
+      background: white;
     }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h2 {
+      margin-bottom: 10px;
+    }
+
     .results {
       max-width: 800px;
       margin: 0 auto;
     }
-    .result {
-      margin-bottom: 20px;
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
+
+    .result-item {
+      margin-bottom: 25px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #f9f9f9;
     }
-    .result h3 {
+
+    .result-item h3 {
       margin: 0;
     }
-    .result a {
+
+    .result-item a {
       text-decoration: none;
       color: #1a0dab;
     }
-    .result p {
-      color: #4d5156;
+
+    .result-item p {
+      color: #333;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      .result-item {
+        padding: 10px;
+      }
     }
   </style>
 </head>
 <body>
+
+  <div class="header">
+    <h2>Results for: <span id="query-text"></span></h2>
+  </div>
+
   <div class="results" id="results">
-    <h2>Searching...</h2>
+    <p>Loading results...</p>
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const query = params.get("q");
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('q');
+
+    document.getElementById("query-text").innerText = query;
 
     fetch(`/api/search?q=${encodeURIComponent(query)}`)
       .then(res => res.json())
       .then(data => {
-        const resultsDiv = document.getElementById("results");
-        resultsDiv.innerHTML = `<h2>Results for "${query}"</h2>`;
+        const resultsContainer = document.getElementById("results");
+        resultsContainer.innerHTML = "";
+
         if (data.length === 0) {
-          resultsDiv.innerHTML += `<p>No results found.</p>`;
+          resultsContainer.innerHTML = "<p>No results found.</p>";
+          return;
         }
-        data.forEach(item => {
-          resultsDiv.innerHTML += `
-            <div class="result">
-              <h3><a href="${item.url}" target="_blank">${item.title}</a></h3>
-              <p>${item.description}</p>
-              <small>${item.url}</small>
-            </div>
+
+        data.forEach(result => {
+          const div = document.createElement("div");
+          div.className = "result-item";
+          div.innerHTML = `
+            <h3><a href="${result.url}" target="_blank">${result.title}</a></h3>
+            <p>${result.description}</p>
           `;
+          resultsContainer.appendChild(div);
         });
       })
-      .catch(error => {
-        document.getElementById("results").innerHTML = `<p>Error fetching results.</p>`;
-        console.error(error);
+      .catch(err => {
+        document.getElementById("results").innerHTML = "<p>Error loading results.</p>";
+        console.error(err);
       });
   </script>
+
 </body>
 </html>
 
