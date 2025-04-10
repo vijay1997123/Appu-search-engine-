@@ -1,26 +1,17 @@
-import sqlite3
-import sys
+from flask import Flask, request, jsonify
+from your_crawler_module import search_function  # Use your crawler's function
 
-def search(query):
-    conn = sqlite3.connect("data.db")
-    cursor = conn.cursor()
+app = Flask(__name__)
 
-    # Search for the query in title and content (case-insensitive)
-    cursor.execute("SELECT url, title FROM pages WHERE title LIKE ? OR content LIKE ?", 
-                   (f"%{query}%", f"%{query}%"))
+@app.route('/api/search')
+def search_api():
+    query = request.args.get('q', '')
+    if not query:
+        return jsonify([])
+
+    results = search_function(query)  # Example: list of {title, url, description}
+    return jsonify(results)
+
+if __name__ == '__main__':
+    app.run(debug=True)
     
-    results = cursor.fetchall()
-    conn.close()
-
-    return results
-
-# For testing directly
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        q = " ".join(sys.argv[1:])
-        matches = search(q)
-        for url, title in matches:
-            print(f"{title}\n{url}\n")
-    else:
-        print("Please enter a search query.")
-        
