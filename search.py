@@ -1,14 +1,16 @@
+import json
+
 def search_web(query):
-    # This is a dummy result - you can replace it with your own crawler output later
-    return [
-        {
-            "title": f"Appu Search Result for '{query}'",
-            "url": "https://example.com",
-            "description": f"This is a sample result for '{query}' from Appu Search Engine."
-        },
-        {
-            "title": "Appu Engine Official Site",
-            "url": "https://appusearch.com",
-            "description": "Visit Appu's official search engine homepage."
-        }
-    ]
+    try:
+        with open("data.json", "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        return []
+
+    # Match title or description with query
+    results = []
+    for item in data:
+        if query.lower() in item["title"].lower() or query.lower() in item["description"].lower():
+            results.append(item)
+    return results
+    
