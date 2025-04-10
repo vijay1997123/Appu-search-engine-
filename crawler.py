@@ -1,49 +1,47 @@
+# crawler.py
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+import json
 
-# Simple in-memory index
-index = []
-
-def crawl(url, depth=1):
-    if depth == 0 or not url.startswith("http"):
-        return
-
+def crawl_site(url):
     try:
         response = requests.get(url, timeout=5)
-        if response.status_code != 200:
-            return
+        soup = BeautifulSoup(response.content, "html.parser")
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        title = soup.title.string.strip() if soup.title else url
-        description = soup.meta.get('content') if soup.find('meta', attrs={"name": "description"}) else "No description"
-        
-        index.append({
+        title = soup.title.string.strip() if soup.title else "No Title"
+        description = ""
+        desc_tag = soup.find("meta", attrs={"name": "description"})
+        if desc_tag and "content" in desc_tag.attrs:
+            description = desc_tag["content"]
+
+        return {
             "title": title,
             "url": url,
-            "description": description
-        })
-
-        # Crawl links inside the page
-        for link_tag in soup.find_all('a', href=True):
-            link = urljoin(url, link_tag['href'])
-            # Stay within same domain
-            if urlparse(link).netloc == urlparse(url).netloc:
-                crawl(link, depth=depth-1)
+            "description": description or "No description available."
+        }
 
     except Exception as e:
-        print("Failed to crawl:", url, str(e))
+        print(f"Error crawling {url}: {e}")
+        return None
 
-def build_index(start_url):
-    global index
-    index = []  # clear index
-    crawl(start_url, depth=2)
-    return index
+# Sample seed list
+seed_urls = [
+    "https://en.wikipedia.org/wiki/Hanuman",
+    "https://www.python.org",
+    "https://example.com"
+]
 
-def search_function(query):
+def crawl_and_save():
     results = []
-    for item in index:
-        if query.lower() in item['title'].lower() or query.lower() in item['description'].lower():
-            results.append(item)
-    return results
+    for url in seed_urls:
+        data = crawl_site(url)
+        if data:
+            results.append(data)
+
+    # Save to JSON
+    with open("data.json", "w") as f:
+        json.dump(results, f, indent=2)
+
+if __name__ == "__main__":
+    crawl_and_save()
     
