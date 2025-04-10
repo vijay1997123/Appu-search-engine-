@@ -1,17 +1,28 @@
-from flask import Flask, render_template, request, jsonify
-import search
+from flask import Flask, jsonify, request, send_from_directory
+import json
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
-def home():
-    return render_template("index.html")
+# Serve HTML file
+@app.route("/search.html")
+def search_page():
+    return send_from_directory("static", "search.html")
 
-# This is the route your search.html is trying to call
+# API to fetch data.json results
 @app.route("/api/search")
 def api_search():
-    query = request.args.get("q", "")
-    results = search.search_web(query)  # make sure your search.py has this function
+    query = request.args.get("q", "").lower()
+    results = []
+
+    try:
+        with open("data.json", "r") as f:
+            data = json.load(f)
+            for item in data:
+                if query in item["title"].lower() or query in item["description"].lower():
+                    results.append(item)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
     return jsonify(results)
 
 if __name__ == "__main__":
