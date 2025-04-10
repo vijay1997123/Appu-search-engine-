@@ -97,7 +97,7 @@
 <body>
   <div class="navbar">
     <div class="language-selector">
-      <select>
+      <select onchange="changeLang(this.value)">
         <option value="en">All Languages</option>
         <option value="ta">Tamil</option>
         <option value="hi">Hindi</option>
@@ -112,10 +112,26 @@
 
   <div class="main-container">
     <div class="logo">Appu</div>
-    <div class="search-box">
-      <input type="text" placeholder="Search..." />
-      <button>Search</button>
-    </div>
+    <form class="search-box" action="https://www.google.com/search" method="GET">
+      <input type="text" name="q" placeholder="Search..." />
+      <button type="submit">Search</button>
+    </form>
   </div>
+
+  <script>
+    function changeLang(lang) {
+      const placeholderText = {
+        en: "Search...",
+        ta: "தேடுங்கள்...",
+        hi: "खोजें...",
+        te: "వెతకండి...",
+        ml: "തിരയുക...",
+        kn: "ಹುಡುಕಿ...",
+        bn: "অনুসন্ধান করুন...",
+        gu: "શોધો..."
+      };
+      document.querySelector('input[name="q"]').placeholder = placeholderText[lang] || "Search...";
+    }
+  </script>
 </body>
 </html>
