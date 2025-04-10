@@ -1,25 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Appu Search Engine</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <title>Appu Search Engine</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      display: flex;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 30px;
+      overflow: hidden;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 15px 20px;
+      font-size: 16px;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      padding: 15px 20px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #357ae8;
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to Appu Search Engine</h1>
-    <form method="POST">
-        <input type="text" name="query" placeholder="Enter search term" value="{{ query }}">
-        <button type="submit">Search</button>
-    </form>
-
-    {% if results %}
-        <h2>Search Results for "{{ query }}":</h2>
-        <ul>
-            {% for url, title in results %}
-                <li><a href="{{ url }}" target="_blank">{{ title }}</a></li>
-            {% endfor %}
-        </ul>
-    {% elif query %}
-        <p>No results found for "{{ query }}"</p>
-    {% endif %}
+  <h1>Appu</h1>
+  <form class="search-box" action="/search">
+    <input type="text" name="q" placeholder="Search...">
+    <button type="submit">Search</button>
+  </form>
 </body>
 </html>
