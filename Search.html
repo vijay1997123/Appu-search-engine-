@@ -1,1 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Appu Search Results</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .results {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .result {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+    .result h3 {
+      margin: 0;
+    }
+    .result a {
+      text-decoration: none;
+      color: #1a0dab;
+    }
+    .result p {
+      color: #4d5156;
+    }
+  </style>
+</head>
+<body>
+  <div class="results" id="results">
+    <h2>Searching...</h2>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get("q");
+
+    fetch(`/api/search?q=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(data => {
+        const resultsDiv = document.getElementById("results");
+        resultsDiv.innerHTML = `<h2>Results for "${query}"</h2>`;
+        if (data.length === 0) {
+          resultsDiv.innerHTML += `<p>No results found.</p>`;
+        }
+        data.forEach(item => {
+          resultsDiv.innerHTML += `
+            <div class="result">
+              <h3><a href="${item.url}" target="_blank">${item.title}</a></h3>
+              <p>${item.description}</p>
+              <small>${item.url}</small>
+            </div>
+          `;
+        });
+      })
+      .catch(error => {
+        document.getElementById("results").innerHTML = `<p>Error fetching results.</p>`;
+        console.error(error);
+      });
+  </script>
+</body>
+</html>
 
