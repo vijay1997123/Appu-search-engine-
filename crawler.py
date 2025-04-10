@@ -1,52 +1,49 @@
 import requests
 from bs4 import BeautifulSoup
-import sqlite3
 from urllib.parse import urljoin, urlparse
 
-# Connect to SQLite DB
-conn = sqlite3.connect("data/pages.db")
-cursor = conn.cursor()
+# Simple in-memory index
+index = []
 
-# Create table
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS pages (
-    url TEXT PRIMARY KEY,
-    title TEXT,
-    content TEXT
-)
-""")
-conn.commit()
-
-def is_valid(url):
-    parsed = urlparse(url)
-    return bool(parsed.netloc) and bool(parsed.scheme)
-
-def crawl(url, visited=set()):
-    if url in visited:
+def crawl(url, depth=1):
+    if depth == 0 or not url.startswith("http"):
         return
-    print(f"Crawling: {url}")
-    visited.add(url)
+
     try:
         response = requests.get(url, timeout=5)
-        soup = BeautifulSoup(response.text, "html.parser")
-        title = soup.title.string if soup.title else "No Title"
-        content = soup.get_text()
+        if response.status_code != 200:
+            return
 
-        # Store in DB
-        cursor.execute("INSERT OR IGNORE INTO pages (url, title, content) VALUES (?, ?, ?)", (url, title, content))
-        conn.commit()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        title = soup.title.string.strip() if soup.title else url
+        description = soup.meta.get('content') if soup.find('meta', attrs={"name": "description"}) else "No description"
+        
+        index.append({
+            "title": title,
+            "url": url,
+            "description": description
+        })
 
-        # Extract and crawl internal links
-        for link in soup.find_all("a", href=True):
-            full_url = urljoin(url, link['href'])
-            if is_valid(full_url) and "http" in full_url:
-                crawl(full_url, visited)
+        # Crawl links inside the page
+        for link_tag in soup.find_all('a', href=True):
+            link = urljoin(url, link_tag['href'])
+            # Stay within same domain
+            if urlparse(link).netloc == urlparse(url).netloc:
+                crawl(link, depth=depth-1)
+
     except Exception as e:
-        print(f"Failed to crawl {url}: {e}")
+        print("Failed to crawl:", url, str(e))
 
-# Start point
-start_url = "https://example.com"
-crawl(start_url)
+def build_index(start_url):
+    global index
+    index = []  # clear index
+    crawl(start_url, depth=2)
+    return index
 
-conn.close()
-            
+def search_function(query):
+    results = []
+    for item in index:
+        if query.lower() in item['title'].lower() or query.lower() in item['description'].lower():
+            results.append(item)
+    return results
+    
